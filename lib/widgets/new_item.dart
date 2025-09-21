@@ -23,13 +23,20 @@ class _NewItemState extends State<NewItem> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
-                maxLength: 50,
+                maxLength: 51,
                 decoration: const InputDecoration(
                   label: Text('Name'),
                 ),
                 //* <--- Validator to check if the input is valid -->
                 validator: (value) {
-                  return "Demo!";
+                  if (value == null ||
+                      value.isEmpty ||
+                      value.trim().length == 1 ||
+                      value.trim().length > 50) {
+                    return 'Invalid Name!';
+                  } else {
+                    return null;
+                  }
                 },
               ),
               Row(
@@ -41,6 +48,16 @@ class _NewItemState extends State<NewItem> {
                         label: Text('Quantity'),
                       ),
                       initialValue: "1",
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null ||
+                            int.tryParse(value)! <= 1) {
+                          return 'Invalid Quantity!';
+                        } else {
+                          return "";
+                        }
+                      },
                     ),
                   ),
 
@@ -67,6 +84,22 @@ class _NewItemState extends State<NewItem> {
                       ],
                       onChanged: (value) {},
                     ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text("Reset"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: const Text("Add Item"),
                   ),
                 ],
               ),
