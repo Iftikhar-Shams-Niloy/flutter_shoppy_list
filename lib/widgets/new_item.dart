@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/categories.dart';
+import '../models/category.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -12,6 +13,22 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
+  final _formKey = GlobalKey<FormState>();
+  var _nameEntered = "";
+  var _quantityEntered = 1;
+  var _categorySelected = categories[Categories.vegetables]!;
+
+  //* <--- currentState: Form state
+  //* <--- validate: executes it's validator function and returns boolean value. --->
+  void _saveItem() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save(); //* Only when when valid
+      print(_nameEntered); //! <--- Delete later!
+      print(_quantityEntered); //! <--- Delete later!
+      print(_categorySelected); //! <--- Delete later!
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +36,7 @@ class _NewItemState extends State<NewItem> {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Form(
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -38,15 +56,20 @@ class _NewItemState extends State<NewItem> {
                     return null;
                   }
                 },
+                onSaved: (myValue) {
+                  _nameEntered = myValue!;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
+                    //! <--- Quantity text field here --->
                     child: TextFormField(
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
                       ),
+                      keyboardType: TextInputType.number,
                       initialValue: "1",
                       validator: (value) {
                         if (value == null ||
@@ -55,8 +78,11 @@ class _NewItemState extends State<NewItem> {
                             int.tryParse(value)! <= 1) {
                           return 'Invalid Quantity!';
                         } else {
-                          return "";
+                          return null;
                         }
+                      },
+                      onSaved: (myValue) {
+                        _quantityEntered = int.parse(myValue!);
                       },
                     ),
                   ),
@@ -82,7 +108,11 @@ class _NewItemState extends State<NewItem> {
                             ),
                           ),
                       ],
-                      onChanged: (value) {},
+                      onChanged: (myValue) {
+                        setState(() {
+                          _categorySelected = myValue!;
+                        });
+                      },
                     ),
                   ),
                 ],
@@ -93,12 +123,15 @@ class _NewItemState extends State<NewItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  //* _formKey is a global key || this resets the state
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _formKey.currentState!.reset();
+                    },
                     child: const Text("Reset"),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _saveItem,
                     child: const Text("Add Item"),
                   ),
                 ],
