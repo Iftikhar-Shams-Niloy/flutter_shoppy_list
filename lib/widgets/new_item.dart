@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shoppy_list/models/grocery_item.dart';
 
 import '../data/categories.dart';
 import '../models/category.dart';
@@ -23,6 +24,14 @@ class _NewItemState extends State<NewItem> {
   void _saveItem() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save(); //* Only when when valid
+      Navigator.of(context).pop( //* Creates GroceryItem() and pass it back to previous screen
+        GroceryItem(
+          id: DateTime.now().toString(),
+          name: _nameEntered,
+          quantity: _quantityEntered,
+          category: _categorySelected,
+        ),
+      );
       print(_nameEntered); //! <--- Delete later!
       print(_quantityEntered); //! <--- Delete later!
       print(_categorySelected); //! <--- Delete later!
