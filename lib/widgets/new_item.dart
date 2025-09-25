@@ -1,6 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_shoppy_list/models/grocery_item.dart';
-
+import 'package:http/http.dart' as http;
 import '../data/categories.dart';
 import '../models/category.dart';
 
@@ -23,8 +25,29 @@ class _NewItemState extends State<NewItem> {
   //* <--- validate: executes it's validator function and returns boolean value. --->
   void _saveItem() {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save(); //* Only when when valid
-      Navigator.of(context).pop( //* Creates GroceryItem() and pass it back to previous screen
+      //* Only when when validate is true
+      _formKey.currentState!.save();
+      
+      final url = Uri.https(
+        //* Setting url from firebase
+        "flutter-shoppy-list-default-rtdb.firebaseio.com",
+        "shopping-list.json",
+      );
+      http.post(
+        url,
+        headers: {
+          //* Setting headers to firebase
+          "Content-Type": "application/json",
+        },
+        body: json.encode({
+          //* Setting body to firebase
+          "name": _nameEntered,
+          "quantity": _quantityEntered,
+          "category": _categorySelected.title,
+        }),
+      );
+      Navigator.of(context).pop(
+        //* Creates GroceryItem() and pass it back to previous screen
         GroceryItem(
           id: DateTime.now().toString(),
           name: _nameEntered,
@@ -32,9 +55,9 @@ class _NewItemState extends State<NewItem> {
           category: _categorySelected,
         ),
       );
-      print(_nameEntered); //! <--- Delete later!
-      print(_quantityEntered); //! <--- Delete later!
-      print(_categorySelected); //! <--- Delete later!
+      // print(_nameEntered); //! <--- Delete later!
+      // print(_quantityEntered); //! <--- Delete later!
+      // print(_categorySelected); //! <--- Delete later!
     }
   }
 
