@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shoppy_list/widgets/new_item.dart';
-
+import 'package:http/http.dart' as http;
 import '../models/grocery_item.dart';
 
 class GroceryList extends StatefulWidget {
@@ -14,7 +14,7 @@ class _GroceryListState extends State<GroceryList> {
   final List<GroceryItem> _groceryItems = [];
 
   void _addItem() async {
-    final newItem = await Navigator.of(context).push(
+    final newItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) => const NewItem(),
       ),
@@ -27,6 +27,13 @@ class _GroceryListState extends State<GroceryList> {
       _groceryItems.add(newItem);
     });
   }
+
+  final url = Uri.https(
+    //* Setting url from firebase
+    "flutter-shoppy-list-default-rtdb.firebaseio.com",
+    "shopping-list.json",
+  );
+
 
   void _removeItem(GroceryItem item) {
     final index = _groceryItems.indexOf(item);
