@@ -100,7 +100,7 @@ class _NewItemState extends State<NewItem> {
                         if (value == null ||
                             value.isEmpty ||
                             int.tryParse(value) == null ||
-                            int.tryParse(value)! <= 1) {
+                            int.tryParse(value)! < 1) {
                           return 'Invalid Quantity!';
                         } else {
                           return null;

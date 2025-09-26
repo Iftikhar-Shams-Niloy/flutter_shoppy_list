@@ -70,6 +70,12 @@ class _GroceryListState extends State<GroceryList> {
         builder: (ctx) => const NewItem(),
       ),
     );
+    //* Check if mounted or not. Then loadItems() again to update the screen
+    if (!mounted) {
+      return;
+    } else {
+      _loadItems();
+    }
   }
 
   final url = Uri.https(
