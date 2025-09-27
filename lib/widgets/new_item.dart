@@ -20,6 +20,7 @@ class _NewItemState extends State<NewItem> {
   var _nameEntered = "";
   var _quantityEntered = 1;
   var _categorySelected = categories[Categories.vegetables]!;
+  var _isSending = false;
 
   //* <--- currentState: Form state
   //* <--- validate: executes it's validator function and returns boolean value. --->
@@ -27,6 +28,11 @@ class _NewItemState extends State<NewItem> {
     if (_formKey.currentState!.validate()) {
       //* Only when when validate is true
       _formKey.currentState!.save();
+
+      //* When saving an item set _isSending to true
+      setState(() {
+        _isSending = true;
+      });
 
       final url = Uri.https(
         //* Setting url from firebase
@@ -160,14 +166,24 @@ class _NewItemState extends State<NewItem> {
                 children: [
                   //* _formKey is a global key || this resets the state
                   TextButton(
-                    onPressed: () {
-                      _formKey.currentState!.reset();
-                    },
+                    //* If sending, then disable "Reset" button
+                    onPressed: _isSending
+                        ? null
+                        : () {
+                            _formKey.currentState!.reset();
+                          },
                     child: const Text("Reset"),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text("Add Item"),
+                    //* if sending, then disable the button and show circular indicator
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? SizedBox(
+                            height: 12,
+                            width: 12,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text("Add Item"),
                   ),
                 ],
               ),
