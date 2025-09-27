@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_shoppy_list/models/grocery_item.dart';
 import 'package:http/http.dart' as http;
 import '../data/categories.dart';
 import '../models/category.dart';
@@ -45,12 +46,21 @@ class _NewItemState extends State<NewItem> {
           "category": _categorySelected.title,
         }),
       );
-      print(response.body);
-      print(response.statusCode);
+
+      final responseData = json.decode(response.body);
+
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop();
+
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: responseData['name'],
+          name: _nameEntered,
+          quantity: _quantityEntered,
+          category: _categorySelected,
+        ),
+      );
     }
   }
 

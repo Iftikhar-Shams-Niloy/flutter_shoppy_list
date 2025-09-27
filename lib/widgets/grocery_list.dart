@@ -36,7 +36,7 @@ class _GroceryListState extends State<GroceryList> {
     final Map<String, dynamic> listData = json.decode(
       response.body,
     );
-    final List<GroceryItem> _loadedItemsList = [];
+    final List<GroceryItem> loadedItemsList = [];
     for (final item in listData.entries) {
       //* <--- firstWhere() goes through all the values and finds the first MATCH --->
       /* <--- categoryItem.value.title == item.value["Category"] means it matches the 
@@ -48,7 +48,7 @@ class _GroceryListState extends State<GroceryList> {
           )
           .value;
       //* Adding value of type GroceryItem in _loadedItemsList
-      _loadedItemsList.add(
+      loadedItemsList.add(
         GroceryItem(
           id: item.key,
           name: item.value['name'],
@@ -59,22 +59,23 @@ class _GroceryListState extends State<GroceryList> {
     }
     //* Overwriting the groceryItems and refreshing the screen using setState()
     setState(() {
-      _groceryItemsList = _loadedItemsList;
+      _groceryItemsList = loadedItemsList;
     });
-    print(response);
   }
 
   void _addItem() async {
-    await Navigator.of(context).push<GroceryItem>(
+    final myNewItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(
         builder: (ctx) => const NewItem(),
       ),
     );
-    //* Check if mounted or not. Then loadItems() again to update the screen
-    if (!mounted) {
+
+    if (myNewItem == null){
       return;
     } else {
-      _loadItems();
+      setState(() {
+        _groceryItemsList.add(myNewItem);
+      });
     }
   }
 
