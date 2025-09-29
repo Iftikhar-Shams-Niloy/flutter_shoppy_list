@@ -88,32 +88,32 @@ class _GroceryListState extends State<GroceryList> {
     }
   }
 
-  final url = Uri.https(
-    //* Setting url from firebase
-    "flutter-shoppy-list-default-rtdb.firebaseio.com",
-    "shopping-list.json",
-  );
-
-  void _removeItem(GroceryItem item) {
+  Future<void> _removeItem(GroceryItem item) async {
     final index = _groceryItemsList.indexOf(item);
     setState(() {
       _groceryItemsList.remove(item);
     });
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${item.name} removed.'),
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _groceryItemsList.insert(index, item);
-            });
-          },
-        ),
-      ),
+
+    final url = Uri.https(
+      "flutter-shoppy-list-default-rtdb.firebaseio.com",
+      "shopping-list/${item.id}.json",
     );
+    final response = await http.delete(url);
+    
+    //* <--- If backend deletion fails, then re-add the deleted value on screen. --->
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItemsList.insert(index, item);
+      });
+    }
+
+    //* <--- When nothing on screen, does not stuck in loading screen.--->
+    if (response.body == 'null') {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
   }
 
   @override
