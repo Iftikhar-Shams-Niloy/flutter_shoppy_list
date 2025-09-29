@@ -31,44 +31,54 @@ class _GroceryListState extends State<GroceryList> {
       "shopping-list.json",
     );
 
-    //* <--- Sending request to get the data --->
-    final response = await http.get(url);
-    //! <--- Handle content not found error --->
-    if (response.statusCode >= 400) {
-      _error = "Failed to get data! Try again!";
-    }
+    //* <-- Try executes a code and looks if there is an error -->
+    try {
+      //* <--- Sending request to get the data --->
+      final response = await http.get(url);
 
-    //* <--- json.decode() convers the Json file value into something readable --->
-    // <--- Map<String,...> means, it is mapping "..." as String --->
-    // <--- dynamic means various consisting of various types of data --->
-    final Map<String, dynamic> listData = json.decode(
-      response.body,
-    );
-    final List<GroceryItem> loadedItemsList = [];
-    for (final item in listData.entries) {
-      //* <--- firstWhere() goes through all the values and finds the first MATCH --->
-      /* <--- categoryItem.value.title == item.value["Category"] means it matches the 
-      file we got from json with the existing title exists in categories.entries ---> */
-      final myCategory = categories.entries
-          .firstWhere(
-            (categoryItem) =>
-                categoryItem.value.title == item.value["category"],
-          )
-          .value;
-      //* Adding value of type GroceryItem in _loadedItemsList
-      loadedItemsList.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: item.value['quantity'],
-          category: myCategory,
-        ),
+      //! <--- Handle content not found error --->
+      if (response.statusCode >= 400) {
+        _error = "Failed to get data! Try again!";
+      }
+
+      //* <--- json.decode() convers the Json file value into something readable --->
+      // <--- Map<String,...> means, it is mapping "..." as String --->
+      // <--- dynamic means various consisting of various types of data --->
+      final Map<String, dynamic> listData = json.decode(
+        response.body,
       );
+      final List<GroceryItem> loadedItemsList = [];
+      for (final item in listData.entries) {
+        //* <--- firstWhere() goes through all the values and finds the first MATCH --->
+        /* <--- categoryItem.value.title == item.value["Category"] means it matches the 
+      file we got from json with the existing title exists in categories.entries ---> */
+        final myCategory = categories.entries
+            .firstWhere(
+              (categoryItem) =>
+                  categoryItem.value.title == item.value["category"],
+            )
+            .value;
+
+        //* <--- Adding value of type GroceryItem in _loadedItemsList --->
+        loadedItemsList.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: item.value['quantity'],
+            category: myCategory,
+          ),
+        );
+      }
+      //*<--- Overwriting the groceryItems and refreshing the screen using setState() --->
+      setState(() {
+        _groceryItemsList = loadedItemsList;
+      });
+    } catch (myError) {
+      //* <--- If "try" catches an error then catch the error and save it in myError --->
+      setState(() {
+        _error = "Something went wrong. Please try again later!";
+      });
     }
-    //* Overwriting the groceryItems and refreshing the screen using setState()
-    setState(() {
-      _groceryItemsList = loadedItemsList;
-    });
   }
 
   void _addItem() async {
@@ -99,7 +109,7 @@ class _GroceryListState extends State<GroceryList> {
       "shopping-list/${item.id}.json",
     );
     final response = await http.delete(url);
-    
+
     //* <--- If backend deletion fails, then re-add the deleted value on screen. --->
     if (response.statusCode >= 400) {
       setState(() {
