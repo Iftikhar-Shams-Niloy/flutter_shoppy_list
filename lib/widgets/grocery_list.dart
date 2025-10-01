@@ -31,6 +31,12 @@ class _GroceryListState extends State<GroceryList> {
       "shopping-list.json",
     );
 
+    // indicate loading and clear previous error
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     //* <-- Try executes a code and looks if there is an error -->
     try {
       //* <--- Sending request to get the data --->
@@ -38,20 +44,27 @@ class _GroceryListState extends State<GroceryList> {
 
       //! <--- Handle content not found error --->
       if (response.statusCode >= 400) {
-        _error = "Failed to get data! Try again!";
+        setState(() {
+          _error = "Failed to get data! Try again!";
+          _isLoading = false;
+        });
+        return;
       }
 
-      //* <--- json.decode() convers the Json file value into something readable --->
-      // <--- Map<String,...> means, it is mapping "..." as String --->
-      // <--- dynamic means various consisting of various types of data --->
-      final Map<String, dynamic> listData = json.decode(
-        response.body,
-      );
+      // handle empty database (Firebase returns the string "null" when no data)
+      if (response.body == 'null') {
+        setState(() {
+          _groceryItemsList = [];
+          _isLoading = false;
+        });
+        return;
+      }
+
+      //* <--- json.decode() converts the Json file value into something readable --->
+      final Map<String, dynamic> listData = json.decode(response.body);
       final List<GroceryItem> loadedItemsList = [];
       for (final item in listData.entries) {
         //* <--- firstWhere() goes through all the values and finds the first MATCH --->
-        /* <--- categoryItem.value.title == item.value["Category"] means it matches the 
-      file we got from json with the existing title exists in categories.entries ---> */
         final myCategory = categories.entries
             .firstWhere(
               (categoryItem) =>
@@ -69,14 +82,18 @@ class _GroceryListState extends State<GroceryList> {
           ),
         );
       }
+
       //*<--- Overwriting the groceryItems and refreshing the screen using setState() --->
       setState(() {
         _groceryItemsList = loadedItemsList;
+        _isLoading = false;
+        _error = null;
       });
     } catch (myError) {
       //* <--- If "try" catches an error then catch the error and save it in myError --->
       setState(() {
         _error = "Something went wrong. Please try again later!";
+        _isLoading = false;
       });
     }
   }
@@ -94,6 +111,7 @@ class _GroceryListState extends State<GroceryList> {
       setState(() {
         _groceryItemsList.add(myNewItem);
         _isLoading = false;
+        _error = null; // clear any previous error so the list is shown
       });
     }
   }
@@ -152,7 +170,14 @@ class _GroceryListState extends State<GroceryList> {
             leading: Container(
               width: 24,
               height: 24,
-              color: _groceryItemsList[index].category.color,
+              decoration: BoxDecoration(
+                color: _groceryItemsList[index].category.color,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(
+                  color: Colors.black,
+                  width: 5,
+                ),
+              ),
             ),
             trailing: Text(
               _groceryItemsList[index].quantity.toString(),

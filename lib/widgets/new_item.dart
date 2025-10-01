@@ -141,7 +141,10 @@ class _NewItemState extends State<NewItem> {
                                 Container(
                                   width: 16,
                                   height: 16,
-                                  color: category.value.color,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    color: category.value.color,
+                                  ),
                                 ),
                                 const SizedBox(width: 6),
                                 Text(category.value.title),
