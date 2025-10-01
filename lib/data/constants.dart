@@ -22,7 +22,7 @@ class MyAppTextTheme {
     titleLarge: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w600,
-      color: MyAppScheme.lightScheme.onInverseSurface,
+      color: MyAppScheme.lightScheme.secondary,
     ),
     bodyLarge: TextStyle(
       fontSize: 16,
@@ -42,7 +42,7 @@ class MyAppTextTheme {
     titleLarge: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w600,
-      color: MyAppScheme.darkScheme.onPrimary,
+      color: MyAppScheme.darkScheme.secondary,
     ),
     bodyLarge: TextStyle(
       fontSize: 16,

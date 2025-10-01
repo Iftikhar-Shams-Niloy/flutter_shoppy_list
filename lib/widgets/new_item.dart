@@ -72,10 +72,17 @@ class _NewItemState extends State<NewItem> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Add New Item')),
+      appBar: AppBar(
+        title: Text(
+          'Add New Item',
+          style: textTheme.titleLarge,
+        ),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -83,8 +90,11 @@ class _NewItemState extends State<NewItem> {
             children: [
               TextFormField(
                 maxLength: 51,
-                decoration: const InputDecoration(
-                  label: Text('Name'),
+                decoration: InputDecoration(
+                  label: Text(
+                    'Name',
+                    style: textTheme.bodyMedium,
+                  ),
                 ),
                 //* <--- Validator to check if the input is valid -->
                 validator: (value) {
@@ -107,8 +117,11 @@ class _NewItemState extends State<NewItem> {
                   Expanded(
                     //! <--- Quantity text field here --->
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        label: Text('Quantity'),
+                      decoration: InputDecoration(
+                        label: Text(
+                          'Quantity',
+                          style: textTheme.bodyMedium,
+                        ),
                       ),
                       keyboardType: TextInputType.number,
                       initialValue: "1",
@@ -132,6 +145,7 @@ class _NewItemState extends State<NewItem> {
 
                   Expanded(
                     child: DropdownButtonFormField(
+                      dropdownColor: Theme.of(context).primaryColor,
                       items: [
                         for (final category in categories.entries)
                           DropdownMenuItem(
@@ -144,10 +158,17 @@ class _NewItemState extends State<NewItem> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(25),
                                     color: category.value.color,
+                                    border: Border.all(
+                                      color: Theme.of(context).shadowColor,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 6),
-                                Text(category.value.title),
+                                Text(
+                                  category.value.title,
+                                  style: textTheme.bodySmall,
+                                ),
                               ],
                             ),
                           ),

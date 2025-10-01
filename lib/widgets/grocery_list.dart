@@ -182,8 +182,8 @@ class _GroceryListState extends State<GroceryList> {
                 color: _groceryItemsList[index].category.color,
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(
-                  color: Colors.black,
-                  width: 5,
+                  color: Theme.of(context).shadowColor,
+                  width: 3,
                 ),
               ),
             ),
