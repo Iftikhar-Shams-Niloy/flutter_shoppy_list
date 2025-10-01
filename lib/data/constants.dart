@@ -17,9 +17,52 @@ class MyAppScheme {
   ).copyWith(secondary: MyAppColors.accentYellow);
 }
 
+class MyAppTextTheme {
+  static final light = TextTheme(
+    titleLarge: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: MyAppScheme.lightScheme.onInverseSurface,
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 16,
+      color: MyAppScheme.lightScheme.onSurface,
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 14,
+      color: MyAppScheme.lightScheme.onSurface,
+    ),
+    bodySmall: TextStyle(
+      fontSize: 12,
+      color: MyAppScheme.lightScheme.onSurface,
+    ),
+  );
+
+  static final dark = TextTheme(
+    titleLarge: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: MyAppScheme.darkScheme.onPrimary,
+    ),
+    bodyLarge: TextStyle(
+      fontSize: 16,
+      color: MyAppScheme.darkScheme.onSurface,
+    ),
+    bodyMedium: TextStyle(
+      fontSize: 14,
+      color: MyAppScheme.darkScheme.onSurface,
+    ),
+    bodySmall: TextStyle(
+      fontSize: 12,
+      color: MyAppScheme.darkScheme.onSurface,
+    ),
+  );
+}
+
 class MyAppTheme {
   static final lightTheme = ThemeData.from(colorScheme: MyAppScheme.lightScheme)
       .copyWith(
+        textTheme: MyAppTextTheme.light,
         appBarTheme: AppBarTheme(
           backgroundColor: MyAppScheme.lightScheme.primary,
           foregroundColor: MyAppScheme.lightScheme.onPrimary,
@@ -32,6 +75,7 @@ class MyAppTheme {
 
   static final darkTheme = ThemeData.from(colorScheme: MyAppScheme.lightScheme)
       .copyWith(
+        textTheme: MyAppTextTheme.dark,
         appBarTheme: AppBarTheme(
           backgroundColor: MyAppScheme.darkScheme.primary,
           foregroundColor: MyAppScheme.darkScheme.onPrimary,

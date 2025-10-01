@@ -146,8 +146,13 @@ class _GroceryListState extends State<GroceryList> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     Widget myContent = Center(
-      child: Text("Nothing to show!"),
+      child: Text(
+        "Nothing to show!",
+        style: textTheme.bodyLarge,
+      ),
     );
 
     //* It will show a circular loading animation while loading
@@ -166,7 +171,10 @@ class _GroceryListState extends State<GroceryList> {
           },
           key: ValueKey(_groceryItemsList[index].id),
           child: ListTile(
-            title: Text(_groceryItemsList[index].name),
+            title: Text(
+              _groceryItemsList[index].name,
+              style: textTheme.bodyLarge,
+            ),
             leading: Container(
               width: 24,
               height: 24,
@@ -181,6 +189,7 @@ class _GroceryListState extends State<GroceryList> {
             ),
             trailing: Text(
               _groceryItemsList[index].quantity.toString(),
+              style: textTheme.bodyMedium,
             ),
           ),
         ),
@@ -189,13 +198,19 @@ class _GroceryListState extends State<GroceryList> {
 
     if (_error != null) {
       myContent = Center(
-        child: Text(_error!),
+        child: Text(
+          _error!,
+          style: textTheme.bodyLarge,
+        ),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Grocery List'),
+        title: Text(
+          'My Grocery List',
+          style: textTheme.titleLarge,
+        ),
         actions: [
           IconButton(
             onPressed: _addItem,
