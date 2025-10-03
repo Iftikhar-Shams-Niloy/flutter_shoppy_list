@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_shoppy_list/data/constants.dart';
+import 'package:flutter_shoppy_list/data/app_theme.dart';
 import 'package:flutter_shoppy_list/widgets/grocery_list.dart';
 
 void main() {

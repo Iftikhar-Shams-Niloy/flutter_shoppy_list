@@ -9,12 +9,14 @@ class MyAppScheme {
   static final lightScheme = ColorScheme.fromSeed(
     seedColor: MyAppColors.seedGreen,
     brightness: Brightness.light,
-  ).copyWith(secondary: MyAppColors.accentYellow);
+    secondary: MyAppColors.accentYellow,
+  );
 
   static final darkScheme = ColorScheme.fromSeed(
     seedColor: MyAppColors.seedGreen,
     brightness: Brightness.dark,
-  ).copyWith(secondary: MyAppColors.accentYellow);
+    secondary: MyAppColors.accentYellow,
+  );
 }
 
 class MyAppTextTheme {

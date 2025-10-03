@@ -25,7 +25,7 @@ class _GroceryListState extends State<GroceryList> {
   }
 
   void _loadItems() async {
-    //* <--- Setting up URL --->
+    //* <--- Setting up URL from Firebase --->
     final url = Uri.https(
       "flutter-shoppy-list-default-rtdb.firebaseio.com",
       "shopping-list.json",
@@ -147,6 +147,7 @@ class _GroceryListState extends State<GroceryList> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final appTheme = Theme.of(context);
 
     Widget myContent = Center(
       child: Text(
@@ -166,30 +167,75 @@ class _GroceryListState extends State<GroceryList> {
       myContent = ListView.builder(
         itemCount: _groceryItemsList.length,
         itemBuilder: (ctx, index) => Dismissible(
+          //* <<< left -> right >>>
+          background: Container(
+            margin: const EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.green.withValues(alpha: 0.9),
+                  Colors.green.withValues(alpha: 0.2),
+                ],
+              ),
+            ),
+            child: const Icon(Icons.archive, color: Colors.white),
+          ),
+
+          //* <<< right -> left >>>
+          secondaryBackground: Container(
+            margin: const EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            alignment: Alignment.centerRight,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.red.withValues(alpha: 0.2),
+                  Colors.red.withValues(alpha: 0.9),
+                ],
+              ),
+            ),
+            child: const Icon(Icons.delete, color: Colors.white),
+          ),
+
+          //* <--- Calls a removeItem function when swiped on any side --->
           onDismissed: (direction) {
             _removeItem(_groceryItemsList[index]);
           },
           key: ValueKey(_groceryItemsList[index].id),
-          child: ListTile(
-            title: Text(
-              _groceryItemsList[index].name,
-              style: textTheme.bodyLarge,
+
+          //* <--- Each item in the list --->
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 8.0,
+              right: 8.0,
+              top: 4.0,
             ),
-            leading: Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: _groceryItemsList[index].category.color,
-                borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: Theme.of(context).shadowColor,
-                  width: 3,
+            child: Card(
+              color: appTheme.primaryColor,
+              child: ListTile(
+                title: Text(
+                  _groceryItemsList[index].name,
+                  style: textTheme.bodyLarge,
+                ),
+                leading: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: _groceryItemsList[index].category.color,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      color: Theme.of(context).shadowColor,
+                      width: 3,
+                    ),
+                  ),
+                ),
+                trailing: Text(
+                  _groceryItemsList[index].quantity.toString(),
+                  style: textTheme.bodyMedium,
                 ),
               ),
-            ),
-            trailing: Text(
-              _groceryItemsList[index].quantity.toString(),
-              style: textTheme.bodyMedium,
             ),
           ),
         ),
@@ -219,7 +265,10 @@ class _GroceryListState extends State<GroceryList> {
         ],
       ),
 
-      body: myContent,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 4.0),
+        child: myContent,
+      ),
     );
   }
 }
